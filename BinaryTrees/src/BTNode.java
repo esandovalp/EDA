@@ -1,10 +1,11 @@
 
-public class BTNode<T> {
-    T elem;
+// clase auxiliar para todas
+public class BTNode <T extends Comparable<T>> {
+    T val;
     BTNode<T> left, right,dad;
 
-    public BTNode(T elem) {
-        this.elem = elem;
+    public BTNode(T val) {
+        this.val = val;
         this.left = null;
         this.right = null;
         this.dad = null;
@@ -23,11 +24,11 @@ public class BTNode<T> {
     }
 
     public T getElem() {
-        return elem;
+        return val;
     }
 
-    public void setElem(T elem) {
-        this.elem = elem;
+    public void setElem(T val) {
+        this.val = val;
     }
 
     public BTNode<T> getLeft() {
@@ -54,5 +55,16 @@ public class BTNode<T> {
         this.dad = dad;
     }
     
+    public void hang(BTNode<T> son){
+        if (son == null)
+            return;
+        
+        if (son.getElem().compareTo(val) <=0)
+            left = son;     // when to use this.left?
+        else
+            right = son;
+        
+        son.setDad(this);
+    }
     
 }

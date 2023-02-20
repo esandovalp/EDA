@@ -45,103 +45,130 @@ public class Sorting  {
     }
     
     // Quick sort O(n^2)
-    public static <T extends Comparable<T>> void quickSort(T[] arr, int low, int high) {
-        if (low < high) {
-            // choose pivot index
-            int pivotIndex = partition(arr, low, high);
-            
-            // sort the left sub-array
-            quickSort(arr, low, pivotIndex - 1);
-            
-            // sort the right sub-array
-            quickSort(arr, pivotIndex + 1, high);
+    public static <T extends Comparable<T>> void quickSort(T[] array) {
+        quickSort(array, 0, array.length - 1);
+    }
+
+    private static <T extends Comparable<T>> void quickSort(T[] array, int left, int right) {
+        if (left < right) {
+            int pivotIndex = partition(array, left, right);
+            quickSort(array, left, pivotIndex - 1);
+            quickSort(array, pivotIndex + 1, right);
         }
     }
-    
-    private static <T extends Comparable<T>> int partition(T[] arr, int low, int high) {
-        // choose pivot value
-        T pivotValue = arr[high];
-        int i = low - 1;    // partition index 
-        
-        for (int j = low; j <= high - 1; j++) {
-            if (arr[j].compareTo(pivotValue) <= 0) {
+
+    private static <T extends Comparable<T>> int partition(T[] array, int left, int right) {
+        T pivot = array[right];
+        int i = left - 1;
+        for (int j = left; j < right; j++) {
+            if (array[j].compareTo(pivot) < 0) {
                 i++;
-                
-                // swap arr[i] and arr[j]
-                T temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
+                T temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
             }
         }
-        
-        // swap arr[i + 1] and arr[high]
-        T temp = arr[i + 1];
-        arr[i + 1] = arr[high];
-        arr[high] = temp;
-        
+        T temp = array[i + 1];
+        array[i + 1] = array[right];
+        array[right] = temp;
         return i + 1;
     }
     
-    // Merge Sort
-    public static <T extends Comparable<T>> void mergeSort(T[] array, int start, int end)
-    {
-        // base case
-        if (start < end) {
-            // find the middle point
-            int middle = (start + end) / 2;
-
-            mergeSort(array, start, middle); // sort first half
-            mergeSort(array, middle + 1, end);  // sort second half
-
-            // merge the sorted halves
-            merge(array, start, middle, end);
+    // Merge Sort O(nlog(n))
+    public static <T extends Comparable<T>> void mergeSort(T[] array) {
+        mergeSort(array, 0, array.length - 1);
+    }
+    
+    private static <T extends Comparable<T>> void mergeSort(T[] array, int left, int right) {
+        if (left < right) {
+            int mid = (left + right) / 2;
+            mergeSort(array, left, mid);
+            mergeSort(array, mid + 1, right);
+            merge(array, left, mid, right);
         }
     }
-
-    // merges two subarrays of array[].
-    private static <T extends Comparable<T>> void merge(T[] array, int start, int middle, int end) {
-        T[] leftArray  = (T[]) new Comparable[middle - start + 1];
-        T[] rightArray = (T[]) new Comparable[end - middle];
-
-        // fill in left array
-        for (int i = 0; i < leftArray.length; ++i)
-            leftArray[i] = array[start + i];
-
-        // fill in right array
-        for (int i = 0; i < rightArray.length; ++i)
-            rightArray[i] = array[middle + 1 + i];
-
-        /* Merge the temp arrays */
-
-        // initial indexes of first and second subarrays
-        int leftIndex = 0, rightIndex = 0;
-
-        // the index we will start at when adding the subarrays back into the main array
-        int currentIndex = start;
-
-        // compare each index of the subarrays adding the lowest value to the currentIndex
-        while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
-            if (leftArray[leftIndex].compareTo(rightArray[rightIndex]) <= 0){
-                array[currentIndex] = leftArray[leftIndex];
-                leftIndex++;
+    
+    private static <T extends Comparable<T>> void merge(T[] array, int left, int mid, int right) {
+        int leftSize = mid - left + 1;
+        int rightSize = right - mid;
+        T[] leftArray = (T[]) new Comparable[leftSize];
+        T[] rightArray = (T[]) new Comparable[rightSize];
+        for (int i = 0; i < leftSize; i++) {
+            leftArray[i] = array[left + i];
+        }
+        for (int j = 0; j < rightSize; j++) {
+            rightArray[j] = array[mid + 1 + j];
+        }
+        int i = 0;
+        int j = 0;
+        int k = left;
+        while (i < leftSize && j < rightSize) {
+            if (leftArray[i].compareTo(rightArray[j]) <= 0) {
+                array[k] = leftArray[i];
+                i++;
+            } else {
+                array[k] = rightArray[j];
+                j++;
             }
-            else {
-                array[currentIndex] = rightArray[rightIndex];
-                rightIndex++;
+            k++;
+        }
+        while (i < leftSize) {
+            array[k] = leftArray[i];
+            i++;
+            k++;
+        }
+        while (j < rightSize) {
+            array[k] = rightArray[j];
+            j++;
+            k++;
+        }
+    }
+    
+    public static <T extends Comparable<T>> void merge(int leftFirst, int leftLast, int rightFirst, int rightLast, T[] array){
+        T[] tempArray = Arrays.copyOf(array,array.length);
+        int index = leftFirst;
+        int saveFirst = leftFirst;
+
+        while((leftFirst <= leftLast) && (rightFirst <= rightLast)){
+            if(array[leftFirst].compareTo(array[rightFirst]) < 0){
+                tempArray[index] = array[leftFirst];
+                leftFirst++;
+            }else{
+                tempArray[index] = array[rightFirst];
+                rightFirst++;
             }
-            
-            currentIndex++;
+            index++;
+        }
+        while(leftFirst <= leftLast){
+            tempArray[index] = array[leftFirst];
+            leftFirst++;
+            index++;
+        }
+        while(rightFirst <= rightLast){
+            tempArray[index] = array[rightFirst];
+            rightFirst++;
+            index++;
+        }
+        for(index = saveFirst; index <= rightLast;index++){
+            array[index] = tempArray[index];
+        }
+    }
+    
+    private static <T extends Comparable<T>> int partitioning(T[] arr, int start, int end) {
+        T pivot = arr[end];
+        int balancePoint = start; // everything that's smaller to the left of this, the rest to the right
+
+        for (int i = start; i < end; i++) {
+            if(arr[i].compareTo(pivot)<=0) {
+                swap(arr, i, balancePoint);
+                balancePoint++;
+            }
         }
 
-        // copy remaining elements of leftArray[] if any
-        while (leftIndex < leftArray.length) 
-            array[currentIndex++] = leftArray[leftIndex++];
+        swap(arr, end, balancePoint);
 
-        // copy remaining elements of rightArray[] if any
-        while (rightIndex < rightArray.length) 
-            array[currentIndex++] = rightArray[rightIndex++];
+        return balancePoint;
     }
-
     
     public static void main(String[] args) {
         System.out.println("Selection Sort: ");
@@ -163,15 +190,15 @@ public class Sorting  {
         System.out.println(Arrays.toString(bubbleSortArray));
         
         System.out.println("\nQuick Sort: ");
-        Integer[] quickSortArray = {10, 80, 30, 90, 40, 50, 70};
+        Integer[] quickSortArray = {6,9,2,5,1};
         System.out.println(Arrays.toString(quickSortArray));
-        quickSort(quickSortArray,1,quickSortArray.length-1);
+        quickSort(quickSortArray);
         System.out.println(Arrays.toString(quickSortArray));
         
         System.out.println("\nMerge Sort: ");
-        Integer[] mergeSortArray = {38,27,43,3,9,82,10};
+        Integer[] mergeSortArray = {23, 50, 8, 28, 3, 50, 36,48,47,22,8};
         System.out.println(Arrays.toString(mergeSortArray));
-        mergeSort(mergeSortArray, 0,mergeSortArray.length-1);
+        mergeSort(mergeSortArray);
         System.out.println(Arrays.toString(mergeSortArray));
     }
 }

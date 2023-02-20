@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Stack;
 
 
-public class BinaryTree <T> implements BinaryTreeADT<T> {
+public class BinaryTree <T extends Comparable <T>> implements BinaryTreeADT<T> {
     BTNode<T> root;
     int i;
 
@@ -22,37 +22,35 @@ public class BinaryTree <T> implements BinaryTreeADT<T> {
     public int size() {
         return i;
     }
-
-    @Override
-    public boolean contains(Object elem) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
-    private void preOrder(BTNode<T> act, ArrayList<T> list){
+    @Override
+    public void preOrder(BTNode<T> act, ArrayList<T> list){
         if (act == null)
             return;
         
-        list.add(act.elem);
+        list.add(act.val);
         preOrder(act.left,list);
         preOrder(act.right,list);
     }
     
-    private void inOrder(BTNode<T> act, ArrayList<T> list){
+    @Override
+    public void inOrder(BTNode<T> act, ArrayList<T> list){
         if (act == null)
             return;
         
         inOrder(act.left, list);
-        list.add(act.elem);
+        list.add(act.val);
         inOrder(act.right,list);
     }
     
-    private void postOrder(BTNode<T> act, ArrayList<T> list){
+    @Override
+    public void postOrder(BTNode<T> act, ArrayList<T> list){
         if (act == null)
             return;
         
         postOrder(act.left,list);
         postOrder(act.right,list);
-        list.add(act.elem);
+        list.add(act.val);
     }
     
     public Iterator<T> preOrderIterative(){
@@ -115,6 +113,29 @@ public class BinaryTree <T> implements BinaryTreeADT<T> {
             return f1;
     }
     
-    public static void main(String[] args) {
+    @Override
+    public BTNode<T> search(T toSearch){
+        return search(root,toSearch);
     }
+    
+    private BTNode<T> search(BTNode<T> act, T toSearch) {
+        if (act == null)
+            return null;
+        if (act.getElem().equals(toSearch))
+            return act;
+        
+        BTNode<T> ans = search(act.getLeft(),toSearch);
+        
+        if (ans == null)
+            ans = search(act.getRight(),toSearch);
+        
+        return ans;
+    }
+
+    @Override
+    public boolean contains(T elem) {
+        return search(elem) == null;
+    }
+
+    
 }

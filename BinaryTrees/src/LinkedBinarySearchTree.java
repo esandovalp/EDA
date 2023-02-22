@@ -43,38 +43,53 @@ public class LinkedBinarySearchTree <T extends Comparable<T>> extends BinaryTree
         if (guide == null)
             throw new RuntimeException("null");
         
-        if (guide.left == null && guide.right == null) {
-            if (guide.equals(root)){
+        if (guide.left == null && guide.right == null) 
+            return caseOneRemove(guide);
+        
+        if (guide.left == null || guide.right == null)
+            return caseTwoRemove(guide);
+        
+        // case three, lo sustituyo por el sucesor inorder
+        guide = searchBinary((T) inOrder(guide));
+        return remove(guide.val);
+    }
+    
+    private T caseOneRemove(BTNode guide) {
+        T temp = null;
+        
+        if (guide.equals(root)){
                 temp = root.val;
                 root = null;
                 return temp;
-            }
-            temp = guide.val;
-            
-            if (guide.val.compareTo(guide.dad.val) > 0)
-                guide.dad.right = null;
-            else
-                guide.dad.left = null;
         }
         
-        if (guide.left == null || guide.right == null){
-            BTNode<T> son;
-            
-            if (guide.left != null)
-                son = guide.right;
-            else
-                son = guide.left;
-            
-            if (guide.equals(root))
-                root = son;
-            else
-                guide.dad.hang(son);
-            temp = son.val;
-        }
-        
-        // case three 
-        
+        temp = (T) guide.val;
+
+        if (guide.val.compareTo(guide.dad.val) > 0)
+            guide.dad.right = null;
+        else
+            guide.dad.left = null;
+
         return temp;
+    }
+    
+    private T caseTwoRemove(BTNode guide){
+        T temp = null;
+        
+        BTNode<T> son;
+            
+        if (guide.left != null)
+            son = guide.right;
+        else
+            son = guide.left;
+
+        if (guide.equals(root))
+            root = son;
+        else
+            guide.dad.hang(son);
+        temp = son.val;
+        
+        return temp; 
     }
 
     
@@ -113,6 +128,17 @@ public class LinkedBinarySearchTree <T extends Comparable<T>> extends BinaryTree
             else
                 guide = guide.right;
         
+        
+        return guide;
+    }
+    
+    // originalmente, tiene un arraylist que imprime y después se mueve. También es void. 
+    public BTNode inOrder(BTNode<T> act){
+       BTNode guide = null;
+        
+        inOrder(act.left);
+        guide = act;
+        inOrder(act.right);
         
         return guide;
     }

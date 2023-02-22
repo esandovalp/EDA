@@ -4,8 +4,7 @@ import java.util.Arrays;
 
 public class Sort {
 
-// Selection Sort O(n^2)
-//    private int compareSS =0;
+// Selection Sort O(n^2)}
     
     public <T extends Comparable<T>> void selectionSort(T[] arr){  
         for (int i=0; i < arr.length; i++) {
@@ -16,6 +15,23 @@ public class Sort {
                 }
             swap(arr,i,min);
         }
+    }
+    
+    public <T extends Comparable<T>> int selectionSortCompares(T[] arr){  
+        int compares = 0;
+        
+        for (int i=0; i < arr.length; i++) {
+            int min = i;
+            for (int j=i+1; j < arr.length; j++)
+                if (arr[min].compareTo(arr[j]) >=0) {
+                    min = j;
+                    compares++;
+                }
+                    
+            swap(arr,i,min);
+        }
+        
+        return compares;
     }
     
     // Insertion Sort O(n)
@@ -32,6 +48,21 @@ public class Sort {
         }
     }
     
+    public <T extends Comparable<T>> int insertionSortCompares(T[] arr, int n){
+        int compares=0;
+        for (int i = 1; i < n; i++){    
+            int j = i;
+            
+            while( j>=1 && arr[j].compareTo(arr[j-1]) < 0){
+                swap(arr, j, j-1);
+                j--;
+                compares++;
+            }
+            
+        }
+        return compares;
+    }
+    
     // Bubble sort O(n^2)
     public <T extends Comparable<T>> void bubbleSort(T[] arr, int n){
         for (int i=0; i < n; i++)
@@ -41,6 +72,20 @@ public class Sort {
                 }
                     
     }
+    
+    public <T extends Comparable<T>> int bubbleSortCompares(T[] arr, int n){
+        int compares=0;
+        
+        for (int i=0; i < n; i++)
+            for (int j = i+1; j < n; j++)
+                if (arr[i].compareTo(arr[j]) >= 0) {
+                    compares++;
+                    swap (arr,i,j);
+                }
+                    
+        return compares;
+    }
+    
     
     // Quick sort O(n^2) es el unico recursivo
     public  <T extends Comparable<T>> void quickSort(T[] array) {

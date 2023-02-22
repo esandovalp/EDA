@@ -16,6 +16,23 @@ public class Sorting  {
         }
     }
     
+    public static <T extends Comparable<T>> int selectionSortCompares(T[] arr){  
+        int compares = 0;
+        
+        for (int i=0; i < arr.length; i++) {
+            int min = i;
+            for (int j=i+1; j < arr.length; j++)
+                if (arr[min].compareTo(arr[j]) >=0) {
+                    min = j;
+                    compares++;
+                }
+                    
+            swap(arr,i,min);
+        }
+        
+        return compares;
+    }
+    
     private static <T> void swap(T[] arr, int i, int j){
         T copy = arr[i];
         arr[i] = arr[j];

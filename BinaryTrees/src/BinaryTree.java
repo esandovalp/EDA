@@ -136,6 +136,5 @@ public class BinaryTree <T extends Comparable <T>> implements BinaryTreeADT<T> {
     public boolean contains(T elem) {
         return search(elem) == null;
     }
-
     
 }

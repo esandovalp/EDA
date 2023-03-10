@@ -9,7 +9,10 @@ public class LinkedBinarySearchTree <T extends Comparable<T>> extends BinaryTree
     public LinkedBinarySearchTree(Comparable elem) {
         super(elem);
     }
-    
+
+    public LinkedBinarySearchTree() {
+        super(null);
+    }
    
     public void add(T elem) {
         BTNode <T> act = root;
@@ -50,7 +53,7 @@ public class LinkedBinarySearchTree <T extends Comparable<T>> extends BinaryTree
             return caseTwoRemove(guide);
         
         // case three, lo sustituyo por el sucesor inorder
-        guide = searchBinary((T) inOrder(guide));
+        //guide = searchBinary((T) inOrder(guide));
         return remove(guide.val);
     }
     
@@ -131,15 +134,37 @@ public class LinkedBinarySearchTree <T extends Comparable<T>> extends BinaryTree
         
         return guide;
     }
-    
-    // originalmente, tiene un arraylist que imprime y después se mueve. También es void. 
-    public BTNode inOrder(BTNode<T> act){
-       BTNode guide = null;
-        
-        inOrder(act.left);
-        guide = act;
-        inOrder(act.right);
-        
-        return guide;
+
+    @Override
+    public String toString() {
+        return root.getElem() + " ";
     }
+    
+    public void preOrderBS(BTNode<T> act, ArrayList<T> list){
+        if (act == null)
+            return;
+        
+        list.add(act.val);
+        preOrder(act.left,list);
+        preOrder(act.right,list);
+    }
+    
+    public void inOrderBS(BTNode<T> act, ArrayList<T> list){
+        if (act == null)
+            return;
+        
+        inOrder(act.left, list);
+        list.add(act.val);
+        inOrder(act.right,list);
+    }
+    
+    public void postOrderBS(BTNode<T> act, ArrayList<T> list){
+        if (act == null)
+            return;
+        
+        postOrder(act.left,list);
+        postOrder(act.right,list);
+        list.add(act.val);
+    }
+   
 }

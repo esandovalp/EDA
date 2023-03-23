@@ -59,10 +59,10 @@ public class BTNode <T extends Comparable<T>> {
         if (son == null)
             return;
         
-        if (son.getElem().compareTo(val) <=0)
-            left = son;     // when to use this.left?
+        if (son.getElem().compareTo(this.val) <=0)
+            this.left = son;     // when to use this.left?
         else
-            right = son;
+            this.right = son;
         
         son.setDad(this);
     }

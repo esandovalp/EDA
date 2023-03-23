@@ -1,26 +1,19 @@
 
-import java.util.ArrayList;
-
-import java.util.ArrayList;
-
-
 public class Main {
     public static void main(String[] args) {
-        LinkedBinarySearchTree bt = new LinkedBinarySearchTree();
+        AVLTree tree = new AVLTree(25);
+ 
+        tree.add(12);
+        tree.add(50);
+        tree.add(65);
+        tree.add(70);
+        tree.add(30);
+        tree.add(60);
         
-        bt.add(10);
-        bt.add(12);
-        bt.add(15);
-        bt.add(25);
-        bt.add(30);
-        bt.add(36);
+        tree.print(tree.root);
         
-        BTNode guide = bt.root;
-        ArrayList list = new ArrayList();
-        
-        bt.inOrder(guide, list);
-        
-        System.out.println(list.toString());
-        System.out.println(bt.findMax());
+        System.out.println("\nDespues de rotacion derecha");
+        tree.rotacionIzquierda(tree.root.getRight());
+        tree.print(tree.root);
     }
 }

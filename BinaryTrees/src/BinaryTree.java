@@ -137,4 +137,21 @@ public class BinaryTree <T extends Comparable <T>> implements BinaryTreeADT<T> {
         return search(elem) == null;
     }
     
+    public boolean isBST(BTNode guide, T min, T max) {
+        if (guide == null)
+            return true;
+        
+        if (guide.val.compareTo(guide.left) <= 0)
+            return false;
+        
+        if (guide.val.compareTo(guide.right.val) >= 0)
+            return false;
+        
+        return isBST(guide.right, (T) guide.val, max) && isBST(guide.left, min,(T) guide.val);
+    }
+    
+    @Override 
+    public String toString(){
+        return this.root.val + "";
+    }
 }

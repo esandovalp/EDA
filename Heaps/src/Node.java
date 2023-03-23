@@ -1,12 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author coron
- */
-public class Node {
-    
+public interface Node <T extends Comparable<T>> {
+    Node getIzq();
+    Node getDer();
+    T getElem();
 }

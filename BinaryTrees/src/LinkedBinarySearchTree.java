@@ -39,9 +39,8 @@ public class LinkedBinarySearchTree <T extends Comparable<T>> extends BinaryTree
 
     
     
-    public T remove(T elem) {       // make every case a private method so we can call them on the third case
+    public T remove(T elem) {       
         BTNode<T> guide = search(elem);
-        T temp = null;
         
         if (guide == null)
             throw new RuntimeException("null");
@@ -52,9 +51,23 @@ public class LinkedBinarySearchTree <T extends Comparable<T>> extends BinaryTree
         if (guide.left == null || guide.right == null)
             return caseTwoRemove(guide);
         
-        // case three, lo sustituyo por el sucesor inorder
-        //guide = searchBinary((T) inOrder(guide));
-        return remove(guide.val);
+        if (guide.getRight() != null && guide.getLeft() != null)
+            guide = sucesorInOrder(guide);
+        
+        return guide.getElem();
+    }
+    
+    public BTNode<T> sucesorInOrder(BTNode<T> guide){
+        if (guide == null || guide.getRight() == null)
+            return null;
+        
+        BTNode<T> inOrd = guide.getRight();
+        
+        while (inOrd.getLeft() != null){
+            inOrd = inOrd.getLeft();
+        }
+        
+        return inOrd;
     }
     
     private T caseOneRemove(BTNode guide) {

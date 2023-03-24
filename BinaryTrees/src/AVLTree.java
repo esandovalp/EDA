@@ -34,7 +34,7 @@ public class AVLTree <T extends Comparable<T>>  {
         return null; 
     }
     
-    public void desbalanceador(AVLNode<T> guide){ // el guia es el nodo desbalanceado  
+    public void balanceador(AVLNode<T> guide){ // el guia es el nodo desbalanceado  
         if (root == null)
             return;
         

@@ -45,55 +45,17 @@ public class AVLNode <T extends Comparable<T>> {
         return this.papa;
     }
     
-    public int getAlturaGeneral(){
-        int leftCount = this.altura;
-        int rightCount = this.altura;
-        AVLNode left = this;
-        AVLNode right = this;
-        
-        
-        while (left.getLeft() != null){
-            leftCount++;
-            left = left.getLeft();
-        }
-        
-        while (right.getRight() != null){
-            rightCount++;
-            right = right.getRight();
-        }
-        
-        if (rightCount > leftCount)
-            return rightCount;
-        else
-            return leftCount;
+    private int getHeight(AVLNode<T> node) {
+    if (node == null) 
+        return -1; 
+    
+    return 1 + Math.max(getHeight(node.getLeft()), getHeight(node.getRight())); 
     }
     
-    public int getFE(){
-        AVLNode guide = this;
-        AVLNode leftNode = guide.getLeft();
-        AVLNode rightNode = guide.getRight();
-        
-        if (leftNode == null && rightNode == null)
-            return 0;
-        
-        int leftCount = 0;
-        int rightCount = 0;
-        
-        while (leftNode != null || rightNode != null){
-            if (leftNode != null){
-                leftCount+=1;
-                leftNode = leftNode.getLeft();
-            }
-            
-            if (rightNode != null) {
-                rightCount+=1;
-                rightNode = rightNode.getRight();
-            }
-        }
-        
-        this.FE = rightCount - leftCount;
-        
-        return rightCount - leftCount;
+    public int getFE(AVLNode<T> node) {
+        int leftHeight = getHeight(node.getLeft());
+        int rightHeight = getHeight(node.getRight());
+        return rightHeight - leftHeight;
     }
     
     public void hang(AVLNode<T> son){
@@ -114,7 +76,7 @@ public class AVLNode <T extends Comparable<T>> {
 
     @Override
     public String toString() {
-        return this.getValor() + " (" + this.getFE() + ")";
+        return this.getValor() + " (" + getFE(this) + ")";
     }
     
     

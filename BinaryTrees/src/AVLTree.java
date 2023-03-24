@@ -13,17 +13,50 @@ public class AVLTree <T extends Comparable<T>>  {
     // Agregar metodos de insertar, borrar y buscar 
     // Imprimir elemento almacenado de cada nodo y el factor de equilibrio
     // calcula FE
-    public AVLNode<T> searchAVL(T elem){
-        AVLNode<T> guide = root;
+    public AVLNode<T> nodoDesbalanceado(AVLNode<T> root) {
+        if (root == null) 
+            return null; 
         
-        while (guide != null && !guide.getValor().equals(elem))
-            if (elem.compareTo(guide.getValor()) <= 0)
-                guide = guide.getLeft();
-            else
-                guide = guide.getRight();
+        int fe = root.getFE(root);
+        if (Math.abs(fe) > 1) 
+            return root; 
         
+        AVLNode<T> izqDesbalanceado = nodoDesbalanceado(root.getLeft());
         
-        return guide;
+        if (izqDesbalanceado != null)
+            return izqDesbalanceado; 
+        
+        AVLNode<T> derDesbalanceado = nodoDesbalanceado(root.getRight());
+        
+        if (derDesbalanceado != null) 
+            return derDesbalanceado;
+        
+        return null; 
+    }
+    
+    public void desbalanceador(AVLNode<T> guide){ // el guia es el nodo desbalanceado  
+        if (root == null)
+            return;
+        
+        if (guide.getFE(guide) == -2) { // gamma o alpha
+            AVLNode<T> alpha = guide.getLeft();
+            
+            if (alpha.getFE(alpha) == -1 ||
+                    alpha.getFE(alpha) == 0)
+                rotacionDerechaDerecha(guide);
+            if(alpha.getFE(alpha) == 1)
+                rotacionIzquierdaDerecha(guide);    // checar si si se manda ese 
+        }
+        
+        if (guide.getFE(guide) == 2){   // gamma
+            AVLNode<T> alpha = guide.getRight();
+            if(alpha.getFE(alpha) == 1 || 
+                    alpha.getFE(alpha) == 0)
+                rotacionDerechaDerecha(guide);
+            if (alpha.getFE(alpha) == -1)
+                rotacionDerechaIzquierda(guide);
+        }
+            
     }
     
     public void add(T elem) {
@@ -48,7 +81,93 @@ public class AVLTree <T extends Comparable<T>>  {
         dad.hang(newNode);
     }
     
-    public void rotacionDerecha(AVLNode gamma) {
+    public T remove(T elem) {       
+        AVLNode<T> guide = searchBinary(elem);
+        
+        if (guide == null)
+            throw new RuntimeException("null");
+        
+        if (guide.getLeft() == null && guide.getRight() == null) 
+            return caseOneRemove(guide);
+        
+        if (guide.getLeft() == null || guide.getRight() == null)
+            return caseTwoRemove(guide);
+        
+        if (guide.getRight() != null && guide.getLeft() != null){
+            AVLNode<T> sucesor = sucesorInOrder(guide); 
+            guide.setValor(sucesor.getValor());
+            caseOneRemove(sucesor);
+        }
+            
+        
+        return guide.getValor();
+    }
+    
+    public AVLNode<T> searchBinary(T elem){
+        AVLNode<T> guide = root;
+        
+        while (guide != null && !guide.getValor().equals(elem))
+            if (elem.compareTo(guide.getValor()) <= 0)
+                guide = guide.getLeft();
+            else
+                guide = guide.getRight();
+        
+        
+        return guide;
+    }
+    
+    public AVLNode<T> sucesorInOrder(AVLNode<T> guide){
+        if (guide == null || guide.getRight() == null)
+            return null;
+        
+        AVLNode<T> inOrd = guide.getRight();
+        
+        while (inOrd.getLeft() != null){
+            inOrd = inOrd.getLeft();
+        }
+        
+        return inOrd;
+    }
+    
+    private T caseOneRemove(AVLNode<T> guide) {
+        T temp = null;
+        
+        if (guide.equals(root)){
+                temp = (T) root.getValor();
+                root = null;
+                return temp;
+        }
+        
+        temp = (T) guide.getValor();
+
+        if (temp.compareTo((T)guide.getPapa().getValor()) > 0)
+            guide.getPapa().setRight(null);
+        else
+            guide.getPapa().setLeft(null);
+
+        return temp;
+    }
+    
+    private T caseTwoRemove(AVLNode<T> guide){
+        T temp = null;
+        
+        AVLNode<T> son;
+            
+        if (guide.getLeft() != null)
+            son = guide.getRight();
+        else
+            son = guide.getLeft();
+
+        if (guide.equals(root))
+            root = son;
+        else
+            guide.getPapa().hang(son);
+        temp = son.getValor();
+        
+        return temp; 
+    }
+    
+    public void rotacionDerechaDerecha(AVLNode gamma) {
         AVLNode<T> papa = gamma.getPapa();
         AVLNode<T> A,B,C,D,beta,alpha;
             
@@ -63,7 +182,7 @@ public class AVLTree <T extends Comparable<T>>  {
         papa.hang(alpha);
     }
     
-    public void rotacionIzquierda(AVLNode<T> gamma){
+    public void rotacionIzquierdaIzquierda(AVLNode<T> gamma){
         AVLNode<T> papa = gamma.getPapa();
         AVLNode<T> A,B,C,D,alpha,beta;
         
@@ -77,14 +196,36 @@ public class AVLTree <T extends Comparable<T>>  {
         papa.hang(alpha);
     }
     
-    public void rotaciones(){
-        AVLNode<T> guide = root;
+    public void rotacionIzquierdaDerecha(AVLNode<T> alpha){
+        AVLNode<T> beta, gamma,B,C;
+        AVLNode<T> papa = alpha.getPapa();
         
-        while (guide.getLeft() != null || guide.getRight() != null){
-            if (guide.getLeft().getFE() == -2){ // caso izquierda algo
-                
-            }
-        }
+        beta = alpha.getLeft();
+        gamma = beta.getRight();
+        B = gamma.getLeft();
+        C = gamma.getRight();
+        
+        gamma.setLeft(beta);
+        gamma.setRight(alpha);
+        beta.setRight(B);
+        alpha.setLeft(C);
+        papa.hang(gamma);
+    }
+    
+    public void rotacionDerechaIzquierda(AVLNode<T> alpha){
+        AVLNode<T> beta,gamma,B,C;
+        AVLNode<T> papa = alpha.getPapa();
+        
+        beta = alpha.getRight();
+        gamma = beta.getLeft();
+        B = gamma.getLeft();
+        C = gamma.getRight();
+        
+        gamma.setLeft(alpha);
+        gamma.setRight(beta);
+        alpha.setRight(B);
+        beta.setLeft(C);
+        papa.hang(gamma);
     }
     
     public void print(AVLNode<T> root) {
